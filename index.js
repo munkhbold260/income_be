@@ -24,53 +24,8 @@ const pgConfig = {
 };
 
 const pool = new Pool(pgConfig);
-
-// async function getPgVersion() {
-//   const client = await pool.connect();
-
-//   try {
-//     const result = await client.query(
-//       "CREATE TABLE transaction (id PRIMARY KEY DEFAULT , user_id FOREIGN KEY, amount REAL NOT NULL, transaction_type ENUM ,description TEXT, createdAt TIMESTAMP , updatedAt TIMESTAMP , category_id FOREIGN KEY)"
-//     );
-
-//     // console.log(result.rows[0]);
-//   } finally {
-//     client.release();
-//   }
-// }
-
-// getPgVersion();
-
-// async function getPgVersion() {
-//   const client = await pool.connect();
-
-//   try {
-//     const result = await client.query("ALTER TABLE users ADD avatar_img BLOB");
-
-//     // console.log(result.rows[0]);
-//   } finally {
-//     client.release();
-//   }
-// }
-
-// getPgVersion();
-
-app.post("/col-add", async (req, res) => {
-  const client = await pool.connect();
-  const Query = "ALTER TABLE users ADD avatar_img TINYBLOB";
-  try {
-    await client.query(Query);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    client.release();
-    console.log("user added successfully");
-  }
-
-  res.status(200).send({ message: "User Added successfully from fe" });
-});
-
-app.post("/user-add", async (req, res) => {
+/////////////////////////////////////////////////////////////////////////////////
+app.post("/signup", async (req, res) => {
   const newUser = req.body;
   console.log(newUser);
   const client = await pool.connect();
@@ -84,9 +39,67 @@ app.post("/user-add", async (req, res) => {
     console.log("user added successfully");
   }
   console.log("query", Query);
-  res.status(200).send(Query);
+  res.status(200).send(true);
 });
+//////////////////////////////////////////////////////////
+app.post("/signin", async (req, res) => {
+  const user = req.body;
+  console.log(user);
+  const client = await pool.connect();
+  const Query = `SELECT * FROM users WHERE (email='${user.email}' AND password='${user.password}');`;
+  // const Query = `INSERT INTO users (name,  email, id ,password) VALUES ('${user.email}','${user.password}'); `;
+  try {
+    const dbResponse = await client.query(Query);
+    if (dbResponse["rowCount"]) {
+      return res.status(200).send({ success: "true" });
+    } else {
+      return res.status(500).send({ success: "false" });
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    client.release();
+    console.log("user added successfully");
+  }
+});
+/////////////////////////////////////////////////////////////////////////////////
+app.post("/login", async (req, res) => {
+  const user = req.body;
+  console.log(user);
+  const client = await pool.connect();
+  const Query = `SELECT * FROM users WHERE (email='${user.email}' AND password='${user.password}');`;
 
+  try {
+    const dbResponse = await client.query(Query);
+    if (dbResponse["rowCount"]) {
+      return res.status(200).send({ success: "true" });
+    } else {
+      return res.status(500).send({ success: "false" });
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    client.release();
+    console.log();
+  }
+});
+/////////////////////////////////////////////////////////////////////////////////
+app.post("/col-add", async (req, res) => {
+  const client = await pool.connect();
+  const Query = "ALTER TABLE users DROP COLUMN ceratedat ";
+  try {
+    await client.query(Query);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    client.release();
+    console.log("user added successfully");
+  }
+  res.status(200).send({ message: "User Added successfully from fe" });
+});
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
 app.delete("/user-delete", async (req, res) => {
   const deleteUser = req.body;
   console.log("requ", deleteUser.name);
@@ -104,13 +117,11 @@ app.delete("/user-delete", async (req, res) => {
   res.status(200).send({ message: "User Delete is successfully" });
 });
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-
 app.get("/user-get", async (req, res) => {
   const allUser = req.body;
   console.log("getting alluser", allUser);
   const client = await pool.connect();
   const Query = "SELECT * FROM users;";
-
   try {
     const result = await client.query(Query);
     res.status(200).send({ message: result.rows });
@@ -122,6 +133,7 @@ app.get("/user-get", async (req, res) => {
     console.log("user get");
   }
 });
+/////////////////////////////////////////////////////////////////////////////////
 
 const port = 4000;
 app.listen(port, () => {
