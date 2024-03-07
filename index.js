@@ -30,7 +30,7 @@ const pool = new Pool(pgConfig);
 
 //   try {
 //     const result = await client.query(
-//       "CREATE TABLE users (name VARCHAR(255), age INT, phone VARCHAR(255), email VARCHAR(255), id VARCHAR(255))"
+//       "CREATE TABLE transaction (id PRIMARY KEY DEFAULT , user_id FOREIGN KEY, amount REAL NOT NULL, transaction_type ENUM ,description TEXT, createdAt TIMESTAMP , updatedAt TIMESTAMP , category_id FOREIGN KEY)"
 //     );
 
 //     // console.log(result.rows[0]);
@@ -41,27 +41,23 @@ const pool = new Pool(pgConfig);
 
 // getPgVersion();
 
-///////////////// column addin
 // async function getPgVersion() {
 //   const client = await pool.connect();
 
 //   try {
-//     const result = await client.query(
-//       "ALTER TABLE users ADD password varchar(255) "
-//     );
+//     const result = await client.query("ALTER TABLE users ADD avatar_img BLOB");
 
 //     // console.log(result.rows[0]);
 //   } finally {
 //     client.release();
 //   }
 // }
+
 // getPgVersion();
 
-app.post("/user-add", async (req, res) => {
-  const newUser = req.body;
-  console.log(newUser);
+app.post("/col-add", async (req, res) => {
   const client = await pool.connect();
-  const Query = `INSERT INTO users (name, age, email, id ,password ) VALUES ('${newUser.name}','${newUser.age}','${newUser.email}','${newUser.id}','${newUser.password}');`;
+  const Query = "ALTER TABLE users ADD avatar_img TINYBLOB";
   try {
     await client.query(Query);
   } catch (e) {
@@ -74,12 +70,28 @@ app.post("/user-add", async (req, res) => {
   res.status(200).send({ message: "User Added successfully from fe" });
 });
 
+app.post("/user-add", async (req, res) => {
+  const newUser = req.body;
+  console.log(newUser);
+  const client = await pool.connect();
+  const Query = `INSERT INTO users (name,  email, id ,password) VALUES ('${newUser.name}','${newUser.email}','${newUser.id}','${newUser.password}'); `;
+  try {
+    await client.query(Query);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    client.release();
+    console.log("user added successfully");
+  }
+  console.log("query", Query);
+  res.status(200).send(Query);
+});
+
 app.delete("/user-delete", async (req, res) => {
   const deleteUser = req.body;
   console.log("requ", deleteUser.name);
   const client = await pool.connect();
   const Query = `DELETE FROM users WHERE name='${deleteUser.name}'`;
-  // const Query = "DELETE FROM users WHERE name='bold'";
 
   try {
     client.query(Query);
