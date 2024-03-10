@@ -102,10 +102,10 @@ app.post("/col-add", async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////////
 app.delete("/user-delete", async (req, res) => {
   const deleteUser = req.body;
-  console.log("requ", deleteUser.name);
+  console.log("requ", deleteUser.id);
   const client = await pool.connect();
-  const Query = `DELETE FROM users WHERE name='${deleteUser.name}'`;
-
+  const Query = `DELETE FROM users WHERE id='${deleteUser.id}'`;
+  console.log(Query);
   try {
     client.query(Query);
   } catch (e) {
@@ -119,13 +119,13 @@ app.delete("/user-delete", async (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get("/user-get", async (req, res) => {
   const allUser = req.body;
-  console.log("getting alluser", allUser);
+  // console.log("getting alluser", allUser);
   const client = await pool.connect();
   const Query = "SELECT * FROM users;";
   try {
     const result = await client.query(Query);
     res.status(200).send({ message: result.rows });
-    console.log("result", result);
+    // console.log("result", result);
   } catch (e) {
     console.log(e);
   } finally {
