@@ -41,7 +41,7 @@ app.post("/signup", async (req, res) => {
   console.log("query", Query);
   res.status(200).send(true);
 });
-//////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 app.post("/signin", async (req, res) => {
   const user = req.body;
   console.log(user);
@@ -59,7 +59,7 @@ app.post("/signin", async (req, res) => {
     console.log(e);
   } finally {
     client.release();
-    console.log("user added successfully");
+    console.log("signin successfully");
   }
 });
 /////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ app.delete("/user-delete", async (req, res) => {
   }
   res.status(200).send({ message: "User Delete is successfully" });
 });
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 app.get("/user-get", async (req, res) => {
   const allUser = req.body;
   // console.log("getting alluser", allUser);
