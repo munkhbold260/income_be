@@ -120,6 +120,7 @@ app.delete("/user-delete", async (req, res) => {
 app.get("/user-get", async (req, res) => {
   const allUser = req.body;
   // console.log("getting alluser", allUser);
+  console.log(Query);
   const client = await pool.connect();
   const Query = "SELECT * FROM users;";
   try {
