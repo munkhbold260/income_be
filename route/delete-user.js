@@ -24,25 +24,19 @@ const pgConfig = {
 
 const pool = new Pool(pgConfig);
 /////////////////////////////////////////////////////////////////////////////////
-exports.signUp = async (req, res) => {
-  const newUser = req.body;
-  console.log(newUser);
+exports.deleteUser = async (req, res) => {
+  const deleteUser = req.body;
+  console.log("requ", deleteUser.id);
   const client = await pool.connect();
-  const Query = `INSERT INTO users (name,  email, id ,password) VALUES ('${newUser.name}','${newUser.email}','${newUser.id}','${newUser.password}'); `;
+  const Query = `DELETE FROM users WHERE id='${deleteUser.id}'`;
+  console.log(Query);
   try {
-    const dbResponse = await client.query(Query);
-    if (dbResponse["rowCount"]) {
-      return res.status(200).send({ success: "true" });
-    } else {
-      return res.status(500).send({ success: "false" });
-    }
+    client.query(Query);
   } catch (e) {
-    console.log("11111111111111111111222222222222", e);
-    return res.status(500).send({ success: "false" });
+    console.log(e);
   } finally {
     client.release();
-    console.log("user added successfully");
+    console.log("user deleted");
   }
-  console.log("query", Query);
-  // res.status(200).send(true);
+  res.status(200).send({ message: "User Delete is successfully" });
 };

@@ -19,27 +19,7 @@ app.post("/signin", async (req, res) => {
     console.log("signin successfully");
   }
 });
-/////////////////////////////////////////////////////////////////////////////////
-// app.post("/login", async (req, res) => {
-//   const user = req.body;
-//   console.log(user);
-//   const client = await pool.connect();
-//   const Query = `SELECT * FROM users WHERE (email='${user.email}' AND password='${user.password}');`;
 
-//   try {
-//     const dbResponse = await client.query(Query);
-//     if (dbResponse["rowCount"]) {
-//       return res.status(200).send({ success: "true" });
-//     } else {
-//       return res.status(500).send({ success: "false" });
-//     }
-//   } catch (e) {
-//     console.log(e);
-//   } finally {
-//     client.release();
-//     console.log();
-//   }
-// });
 /////////////////////////////////////////////////////////////////////////////////
 app.post("/col-add", async (req, res) => {
   const client = await pool.connect();

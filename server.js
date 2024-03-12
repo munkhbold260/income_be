@@ -1,6 +1,7 @@
 const { getUser } = require("./route/get-user");
 const { signUp } = require("./route/sign-up");
 const { signIn } = require("./route/sign-in");
+const { deleteUser } = require("./route/delete-user");
 
 const { Pool } = require("pg");
 const express = require("express");
@@ -8,7 +9,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-// require("dotenv").config();
 dotenv.config();
 
 const app = express();
@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 router.get("/user-get", getUser);
 router.post("/signup", signUp);
 router.post("/signin", signIn);
+router.delete("/user-del", deleteUser);
 
 app.use(router);
 /////////////////////////////////////////////////////////////////////////////////
