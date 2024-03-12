@@ -32,8 +32,9 @@ exports.signIn = async (req, res) => {
   // const Query = `INSERT INTO users (name,  email, id ,password) VALUES ('${user.email}','${user.password}'); `;
   try {
     const dbResponse = await client.query(Query);
+    const result = res.send(dbResponse.rows[0]);
     if (dbResponse["rowCount"]) {
-      return res.status(200).send({ success: "true" });
+      return res.status(200).send({ success: result });
     } else {
       return res.status(500).send({ success: "false" });
     }
