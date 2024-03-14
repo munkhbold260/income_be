@@ -26,16 +26,13 @@ async function getUsers() {
   } finally {
     client.release();
   }
-  // console.log(response.rows);
   return response.rows; /// =====> data base-s irseniig routeruu ilgeej bn
 }
 /////////////////////////////////////////////////////////////////////
 async function deleteUser(user) {
-  const deleteUser = user;
-
-  console.log("requ", deleteUser.id);
+  console.log("requ", user.id);
   const client = await pool.connect();
-  const Query = `DELETE FROM users WHERE name='${deleteUser.id}'`;
+  const Query = `DELETE FROM users WHERE name='${user.id}'`;
   console.log(Query);
   try {
     client.query(Query);
