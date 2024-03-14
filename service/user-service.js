@@ -14,6 +14,7 @@ const pgConif = {
 };
 
 const pool = new Pool(pgConif);
+
 /////////////////////////////////////////////////////////////////////
 async function getUsers() {
   const client = await pool.connect();
@@ -29,31 +30,49 @@ async function getUsers() {
   return response.rows; /// =====> data base-s irseniig routeruu ilgeej bn
 }
 /////////////////////////////////////////////////////////////////////
-async function loginUser(req, res) {
-  console.log("uusseeerrrrrr", res);
-  // // const user = res.body;
-  // const client = await pool.connect();
-  // let response;
-  // const Query = `SELECT * FROM users WHERE (email='${user.email}' AND password='${user.password}');`;
-  // // const Query = `INSERT INTO users (name,  email, id ,password) VALUES ('${user.email}','${user.password}'); `;
-  // try {
-  //   response = await client.query(Query);
-  //   const dbResponse = await client.query(Query);
-  //   const result = res.send(dbResponse.rows[0]);
-  //   if (dbResponse["rowCount"]) {
-  //     return res.status(200).send({ success: result });
-  //   } else {
-  //     return res.status(500).send({ success: "false" });
-  //   }
-  // } catch (e) {
-  //   console.log(e);
-  // } finally {
-  //   client.release();
-  //   console.log("signin successfully");
-  // }
+async function deleteUser(user) {
+  const deleteUser = user;
+
+  console.log("requ", deleteUser.id);
+  const client = await pool.connect();
+  const Query = `DELETE FROM users WHERE name='${deleteUser.id}'`;
+  console.log(Query);
+  try {
+    client.query(Query);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    client.release();
+    console.log("user deleted");
+  }
+  return { message: true };
 }
 /////////////////////////////////////////////////////////////////////
+
+async function loginUser(user) {
+  // console.log("uuuussserLog", userLog);
+  const client = await pool.connect();
+  const Query = `SELECT * FROM users WHERE (email='${user.email}' AND password='${user.password}');`;
+
+  let response;
+  try {
+    response = await client.query(Query);
+  } catch (e) {
+  } finally {
+    client.release;
+  }
+  const userId = response.rows[0];
+
+  if (response["rowCount"]) {
+    return userId;
+  } else {
+    return "false";
+  }
+}
+
+/////////////////////////////////////////////////////////////////////
 async function signUp(newUser) {
+  // console.log("newuser", newUser);=== work
   const client = await pool.connect();
   let response;
   try {
@@ -62,14 +81,31 @@ async function signUp(newUser) {
       [newUser.name, newUser.email, newUser.password, newUser.id]
     );
   } catch (error) {
-    throw new Error(error ? error.message : "Error");
+    // throw new Error(error ? error.message : "Error");//// asaahaar ajillahgui
   } finally {
     client.release();
   }
-  return response.rows;
+  console.log("sdsadasdasdasda", response?.rowCount);
+  if (response == null) {
+    return false;
+  } else {
+    return true;
+  }
+}
+/////////////////////////////////////////////////////////////////////
+async function deleteTable(table) {
+  const client = await pool.connect();
+  const Query = "ALTER TABLE transaction ADD amount real not null;";
+  try {
+    await client.query(Query);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    client.release();
+    console.log("user added successfully");
+  }
+  res.status(200).send({ message: "User Added successfully from fe" });
 }
 /////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////
-
-module.exports = { getUsers, loginUser, signUp };
+module.exports = { getUsers, loginUser, signUp, deleteUser, deleteTable };

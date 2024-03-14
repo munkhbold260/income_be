@@ -1,5 +1,11 @@
 const userRouter = require("express").Router();
-const { getUsers, loginUser, signUp } = require("../service/user-service");
+const {
+  getUsers,
+  loginUser,
+  signUp,
+  deleteUser,
+  deleteTable,
+} = require("../service/user-service");
 
 /////////////////////////////////////////////////////////////////////
 userRouter.get("/user-get", async (req, res) => {
@@ -8,11 +14,21 @@ userRouter.get("/user-get", async (req, res) => {
   // console.log(users);
 });
 /////////////////////////////////////////////////////////////////////
+
+userRouter.delete("/user-delete", async (req, res) => {
+  const userId = req.body;
+  console.log("userId", userId);
+  const result = await deleteUser(userId);
+  res.json(result);
+});
+
+/////////////////////////////////////////////////////////////////////
 userRouter.post("/signin", async (req, res) => {
   const user = req.body;
-  console.log("req.body", user);
-  const login = await loginUser();
-  res.json(login);
+  // console.log("req.body", user); ===>working
+  const result = await loginUser(user);
+  res.json(result);
+  console.log("reeeeeeees", result);
 });
 
 /////////////////////////////////////////////////////////////////////
@@ -24,7 +40,9 @@ userRouter.post("/signup", async (req, res) => {
   console.log("reeesssuuult", result);
 });
 /////////////////////////////////////////////////////////////////////
-
+userRouter.get("/col-add", async (req, res) => {
+  const table = await deleteTable();
+});
 /////////////////////////////////////////////////////////////////////
 
 module.exports = userRouter;
