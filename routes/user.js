@@ -5,6 +5,7 @@ const {
   signUp,
   deleteUser,
   deleteTable,
+  selectCurrency,
 } = require("../service/user-service");
 
 /////////////////////////////////////////////////////////////////////
@@ -40,8 +41,19 @@ userRouter.post("/signup", async (req, res) => {
   console.log("reeesssuuult", result);
 });
 /////////////////////////////////////////////////////////////////////
+userRouter.post("/select-currency", async (req, res) => {
+  const newCurrency = req.body;
+  console.log("req.body======>", req.body);
+  const result = await selectCurrency(newCurrency);
+
+  console.log("result", result);
+  res.json(result);
+});
+
+/////////////////////////////////////////////////////////////////////
 userRouter.get("/col-add", async (req, res) => {
   const table = await deleteTable();
+  res.json(table);
 });
 /////////////////////////////////////////////////////////////////////
 

@@ -90,9 +90,33 @@ async function signUp(newUser) {
   }
 }
 /////////////////////////////////////////////////////////////////////
-async function deleteTable(table) {
+async function selectCurrency(currency) {
+  console.log("currency=====>", currency);
   const client = await pool.connect();
-  const Query = "ALTER TABLE transaction ADD amount real not null;";
+  let response;
+
+  try {
+    response = await client.query(
+      `UPDATE users SET currency_type = '${currency.currency}' WHERE id= '${currency.id}'`
+    );
+  } catch (error) {
+  } finally {
+    client.release();
+  }
+  if (response == null) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////
+async function deleteTable(table) {
+  console.log("sdnasdjbsjhdvsejhvfsehgfwehgfv");
+  const client = await pool.connect();
+  const Query = "ALTER TABLE users ADD currency_type text default 'MNT'";
+
+  // ALTER TABLE users ADD email VARCHAR(50) NOT NULL UNIQUE
   try {
     await client.query(Query);
   } catch (e) {
@@ -101,8 +125,15 @@ async function deleteTable(table) {
     client.release();
     console.log("user added successfully");
   }
-  res.status(200).send({ message: "User Added successfully from fe" });
+  ({ message: "User Added successfully from fe" });
 }
 /////////////////////////////////////////////////////////////////////
 
-module.exports = { getUsers, loginUser, signUp, deleteUser, deleteTable };
+module.exports = {
+  getUsers,
+  loginUser,
+  signUp,
+  deleteUser,
+  selectCurrency,
+  deleteTable,
+};
